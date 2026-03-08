@@ -1,62 +1,54 @@
 "use client";
 
-import { useState, useContext } from "react";
-import { CartContext } from "../../context/CartContext";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function PaymentPage() {
-  const { cartData, shippingAddress, addOrder } = useContext(CartContext);
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [upiNumber, setUpiNumber] = useState("");
+export default function PaymentPage(){
 
-  const handlePayment = () => {
-    if(paymentMethod === "UPI" && upiNumber.trim() === "") {
-      alert("Please enter your UPI number");
-      return;
-    }
-    // Save order
-    addOrder({ cart: cartData, shipping: shippingAddress, payment: paymentMethod, upi: upiNumber });
-    alert("Order placed successfully!");
-  };
+  const router = useRouter();
 
-  return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded mt-6">
-      <h2 className="text-xl font-bold mb-4">Payment</h2>
+  const [method,setMethod] = useState("cod");
 
-      <div className="flex flex-col gap-4">
-        <label>
-          <input
-            type="radio"
-            name="payment"
-            value="Credit/Debit Card"
-            checked={paymentMethod === "Credit/Debit Card"}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-          />
-          <span className="ml-2">Credit/Debit Card</span>
-        </label>
+  function placeOrder(){
 
-        <label>
-          <input
-            type="radio"
-            name="payment"
-            value="UPI"
-            checked={paymentMethod === "UPI"}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-          />
-          <span className="ml-2">UPI</span>
-        </label>
+    const shipping = JSON.parse(localStorage.getItem("shipping"));
 
-        {paymentMethod === "UPI" && (
-          <input
-            type="text"
-            placeholder="Enter UPI number"
-            value={upiNumber}
-            onChange={(e) => setUpiNumber(e.target.value)}
-            className="border p-2 rounded mt-2"
-          />
-        )}
-      </div>
-      <label style={labelStyle}>
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    const newOrder = {
+      id: Date.now(),
+      shipping,
+      method,
+      status:"Processing",
+      date:new Date().toLocaleDateString()
+    };
+
+    orders.push(newOrder);
+
+    localStorage.setItem("orders",JSON.stringify(orders));
+
+    alert("Order Placed Successfully");
+
+    router.push("/orders");
+
+  }
+
+  return(
+
+    <div style={{
+      maxWidth:"600px",
+      margin:"50px auto",
+      background:"white",
+      padding:"30px",
+      borderRadius:"10px",
+      boxShadow:"0 3px 10px rgba(0,0,0,0.1)"
+    }}>
+
+      <h2 style={{marginBottom:"20px"}}>Payment Method</h2>
+
+      <div style={cardStyle}>
+
+        <label style={labelStyle}>
           <input
             type="radio"
             name="payment"
@@ -67,18 +59,59 @@ export default function PaymentPage() {
           Cash on Delivery
         </label>
 
-      <button
-        onClick={handlePayment}
-        className="mt-6 bg-green-600 text-white px-4 py-2 rounded"
-      >
-        Pay Securely
+        <label style={labelStyle}>
+          <input
+            type="radio"
+            name="payment"
+            value="upi"
+            onChange={(e)=>setMethod(e.target.value)}
+          />
+          UPI Payment
+          alert("Please enter your UPI number");
+        </label>
+
+        <label style={labelStyle}>
+          <input
+            type="radio"
+            name="payment"
+            value="card"
+            onChange={(e)=>setMethod(e.target.value)}
+          />
+          Debit / Credit Card
+          alert("Please enter your Card number");
+        </label>
+
+      </div>
+
+      <button onClick={placeOrder} style={buttonStyle}>
+        Place Order
       </button>
 
-      <div className="mt-4">
-        <Link href="/">
-          <button className="px-4 py-2 bg-gray-300 rounded">Back to Cart</button>
-        </Link>
-      </div>
     </div>
+
   );
 }
+
+const cardStyle={
+  border:"1px solid #ddd",
+  padding:"20px",
+  borderRadius:"8px",
+  marginBottom:"20px"
+};
+
+const labelStyle={
+  display:"block",
+  marginBottom:"10px",
+  fontSize:"15px"
+};
+
+const buttonStyle={
+  width:"100%",
+  padding:"12px",
+  background:"#2e7d32",
+  color:"white",
+  border:"none",
+  borderRadius:"6px",
+  fontSize:"16px",
+  cursor:"pointer"
+};
