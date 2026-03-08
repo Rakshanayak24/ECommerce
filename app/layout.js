@@ -1,20 +1,36 @@
 "use client"; // Must be client for interactive header
 
-import { CartProvider } from "../context/CartContext";
-import Header from "../components/Header";
+import Navbar from "../components/Navbar";
+
+export const metadata = {
+  title: "EcoShop Checkout",
+  description: "Mini Ecommerce Store"
+};
 
 export default function RootLayout({ children }) {
+
   return (
+
     <html lang="en">
-      <head>
-        <title>Ecoyaan Checkout</title>
-      </head>
-      <body className="bg-gray-100 min-h-screen">
-        <CartProvider>
-          <Header /> {/* Header shows login/logout/order buttons */}
-          <main>{children}</main>
-        </CartProvider>
+
+      <body
+        style={{
+          margin:0,
+          fontFamily:"Arial, sans-serif",
+          background:"#f5f5f5"
+        }}
+      >
+
+        <Navbar/>
+
+        <div style={{padding:"30px"}}>
+          {children}
+        </div>
+
       </body>
+
     </html>
+
   );
+
 }
