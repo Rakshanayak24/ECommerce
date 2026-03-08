@@ -59,29 +59,44 @@ export default function PaymentPage(){
           Cash on Delivery
         </label>
 
-        <label style={labelStyle}>
           <input
             type="radio"
             name="payment"
-            value="upi"
-            onChange={(e)=>setMethod(e.target.value)}
+            value="Credit/Debit Card"
+            checked={paymentMethod === "Credit/Debit Card"}
+            onChange={(e) => setPaymentMethod(e.target.value)}
           />
-          UPI Payment
-          alert("Please enter your UPI number");
+          Credit/Debit Card
         </label>
 
-        <label style={labelStyle}>
+        <label className="flex items-center gap-2">
           <input
             type="radio"
             name="payment"
-            value="card"
-            onChange={(e)=>setMethod(e.target.value)}
+            value="UPI"
+            checked={paymentMethod === "UPI"}
+            onChange={(e) => setPaymentMethod(e.target.value)}
           />
-          Debit / Credit Card
-          alert("Please enter your Card number");
+          UPI
         </label>
 
+        {paymentMethod === "UPI" && (
+          <input
+            type="text"
+            placeholder="Enter UPI number"
+            value={upiNumber}
+            onChange={(e) => setUpiNumber(e.target.value)}
+            className="border p-2 rounded mt-2"
+          />
+        )}
       </div>
+
+      <button
+        onClick={handlePayment}
+        className="mt-6 bg-green-600 text-white px-4 py-2 rounded"
+      >
+        Pay Securely
+      </button>
 
       <button onClick={placeOrder} style={buttonStyle}>
         Place Order
