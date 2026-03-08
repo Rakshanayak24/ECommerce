@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import CartItem from "../components/CartItem";
 import OrderSummary from "../components/OrderSummary";
+import { UserContext } from "../context/UserContext";
 
 export default function Home(){
 
