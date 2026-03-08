@@ -1,55 +1,113 @@
 "use client";
 
-import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { CartContext } from "../../../context/CartContext";
+import { useState } from "react";
 
-export default function LoginPage() {
-  const { user, login } = useContext(CartContext);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function Login(){
+
   const router = useRouter();
 
-  useEffect(() => {
-    if(user) router.push("/"); // redirect if already logged in
-  }, [user]);
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  function handleLogin(e){
+
     e.preventDefault();
-    login({ email, name: email.split("@")[0] }); // simple mock login
-    router.push("/");
-  };
 
-  return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if(!user){
+      alert("No account found. Please signup.");
+      return;
+    }
+
+    if(user.email === email && user.password === password){
+
+      localStorage.setItem("loggedIn","true");
+
+      alert("Login Successful");
+
+      router.push("/");
+
+    }else{
+
+      alert("Invalid email or password");
+
+    }
+
+  }
+
+  return(
+
+    <div
+      style={{
+        maxWidth:"400px",
+        margin:"80px auto",
+        padding:"30px",
+        background:"white",
+        borderRadius:"10px",
+        boxShadow:"0 2px 10px rgba(0,0,0,0.1)"
+      }}
+    >
+
+      <h2 style={{textAlign:"center"}}>Login</h2>
+
+      <form onSubmit={handleLogin}>
+
         <input
-          type="email"
           placeholder="Email"
-          value={email}
           required
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full border p-2 rounded mb-4"
+          onChange={(e)=>setEmail(e.target.value)}
+          style={{
+            width:"100%",
+            padding:"10px",
+            marginBottom:"10px",
+            borderRadius:"5px",
+            border:"1px solid #ccc"
+          }}
         />
+
         <input
           type="password"
           placeholder="Password"
-          value={password}
           required
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full border p-2 rounded mb-4"
+          onChange={(e)=>setPassword(e.target.value)}
+          style={{
+            width:"100%",
+            padding:"10px",
+            marginBottom:"20px",
+            borderRadius:"5px",
+            border:"1px solid #ccc"
+          }}
         />
+
         <button
           type="submit"
-          className="w-full bg-green-600 text-white p-2 rounded"
+          style={{
+            width:"100%",
+            padding:"12px",
+            background:"#2e7d32",
+            color:"white",
+            border:"none",
+            borderRadius:"6px",
+            cursor:"pointer"
+          }}
         >
           Login
         </button>
+
       </form>
+
+      <p style={{marginTop:"20px",textAlign:"center"}}>
+
+        Don't have an account?
+
+        <a href="/auth/signup"> Signup</a>
+
+      </p>
+
     </div>
+
   );
+
 }
