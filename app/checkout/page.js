@@ -1,54 +1,66 @@
-"use client";
+"use client"; // must be first line
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { CartContext } from "../../context/CartContext";
-import { useRouter } from "next/navigation";
 import CheckoutSteps from "../../components/CheckoutSteps";
+import OrderSummary from "../../components/OrderSummary";
+import Link from "next/link";
 
-export default function Checkout() {
+export default function CheckoutPage() {
+  const { cartData, shippingAddress, setShippingAddress } = useContext(CartContext);
 
-  const router = useRouter();
-  const { setShippingAddress } = useContext(CartContext);
-
-  const [form,setForm] = useState({});
-
-  function handleSubmit(e){
-    e.preventDefault();
-
-    if(!form.email?.includes("@")){
-      alert("Invalid email");
-      return;
-    }
-
-    if(form.phone?.length !== 10){
-      alert("Phone must be 10 digits");
-      return;
-    }
-
-    setShippingAddress(form);
-    router.push("/payment");
-  }
+  const handleChange = (e) => {
+    setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
+  };
 
   return (
-    <div style={{maxWidth:600,margin:"40px auto"}}>
-
+    <div className="max-w-3xl mx-auto p-6">
       <CheckoutSteps step={1} />
-
-      <form onSubmit={handleSubmit} style={{display:"flex",flexDirection:"column",gap:10}}>
-
-        <input placeholder="Full Name" required onChange={e=>setForm({...form,name:e.target.value})}/>
-        <input placeholder="Email" required onChange={e=>setForm({...form,email:e.target.value})}/>
-        <input placeholder="Phone" required onChange={e=>setForm({...form,phone:e.target.value})}/>
-        <input placeholder="PIN Code" required onChange={e=>setForm({...form,pin:e.target.value})}/>
-        <input placeholder="City" required onChange={e=>setForm({...form,city:e.target.value})}/>
-        <input placeholder="State" required onChange={e=>setForm({...form,state:e.target.value})}/>
-
-        <button style={{padding:12,background:"#2e7d32",color:"#fff"}}>
-          Continue to Payment
-        </button>
-
+      <h1 className="text-2xl font-bold mb-4">Shipping Address</h1>
+      <form className="space-y-4">
+        <input
+          name="fullName"
+          placeholder="Full Name"
+          value={shippingAddress.fullName || ""}
+          onChange={handleChange}
+        />
+        <input
+          name="email"
+          placeholder="Email"
+          value={shippingAddress.email || ""}
+          onChange={handleChange}
+        />
+        <input
+          name="phone"
+          placeholder="Phone Number"
+          value={shippingAddress.phone || ""}
+          onChange={handleChange}
+        />
+        <input
+          name="pinCode"
+          placeholder="PIN Code"
+          value={shippingAddress.pinCode || ""}
+          onChange={handleChange}
+        />
+        <input
+          name="city"
+          placeholder="City"
+          value={shippingAddress.city || ""}
+          onChange={handleChange}
+        />
+        <input
+          name="state"
+          placeholder="State"
+          value={shippingAddress.state || ""}
+          onChange={handleChange}
+        />
       </form>
-
+      <OrderSummary data={cartData} />
+      <Link href="/payment">
+        <button className="bg-green-600 text-white px-4 py-2 rounded mt-4">
+          Proceed to Payment
+        </button>
+      </Link>
     </div>
   );
 }
