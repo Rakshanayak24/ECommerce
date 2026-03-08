@@ -1,8 +1,8 @@
 "use client";
 
 import { useContext } from "react";
-import { CartContext } from "../context/CartContext";
 import Link from "next/link";
+import { CartContext } from "../context/CartContext";
 
 export default function Header() {
   const { user, logout } = useContext(CartContext);
