@@ -1,7 +1,6 @@
-"use client"; // Must be client for interactivity
+"use client";
 
 import { CartProvider } from "../context/CartContext";
-import Header from "../components/Header";
 
 export default function RootLayout({ children }) {
   return (
@@ -9,11 +8,8 @@ export default function RootLayout({ children }) {
       <head>
         <title>Ecoyaan Checkout</title>
       </head>
-      <body className="bg-gray-100 min-h-screen">
-        <CartProvider>
-          <Header />  {/* Header will show login/logout/order buttons */}
-          <main>{children}</main>
-        </CartProvider>
+      <body>
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );
